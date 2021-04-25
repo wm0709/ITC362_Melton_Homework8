@@ -47,4 +47,12 @@ public class Puzzle {
     public int getNumberOfParts(){
         return parts.length;
     }
+
+    public String wordToChange(){
+        return "MOBILE";
+    }
+
+    public String replacementWord(){
+        return"ANDROID";
+    }
 }

@@ -2,6 +2,7 @@ package com.example.puzzle;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -45,10 +46,23 @@ public class PuzzleView extends RelativeLayout {
     }
 
     public void fillGui(String[] scrambledText){
+        int minFontSize = DynamicSizing.MAX_FONT_SIZE;
         for(int i = 0; i < tvs.length; i++) {
             tvs[i].setText(scrambledText[i]);
             positions[i] = i;
+
+            tvs[i].setWidth(params[i].width);
+            tvs[i].setPadding(20,5,20,5);
+
+            // find font size dynamically
+            int fontSize = DynamicSizing.setFontSizeToFitInView(tvs[i]);
+            if(minFontSize > fontSize)
+                minFontSize = fontSize;
         }
+
+        // set font size for TextViews
+        for(int i = 0; i < tvs.length; i++)
+            tvs[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, minFontSize);
     }
 
     // Returns the index of tv within the array tvs
@@ -113,5 +127,21 @@ public class PuzzleView extends RelativeLayout {
             current[i] = tvs[positions[i]].getText().toString();
 
         return current;
+    }
+
+    // Returns index of TextView whose location includes y
+    public int indexOfTextView(int y){
+        int position = y / labelHeight;
+        return positions[position];
+    }
+
+    // returns text inside TextView whose index is tvIndex
+    public String getTextViewText(int tvIndex){
+        return tvs[tvIndex].getText().toString();
+    }
+
+    // replace text inside TextView whose index is tvIndex with s
+    public void setTextViewText(int tvIndex, String s){
+        tvs[tvIndex].setText(s);
     }
 }

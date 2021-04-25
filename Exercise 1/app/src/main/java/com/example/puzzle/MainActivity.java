@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -19,6 +20,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public static int ACTION_BAR_HEIGHT = 56; // in dp
     private PuzzleView puzzleView;
     private Puzzle puzzle;
+    private int statusBarHeight;
+    private int actionBarHeight;
+    private GestureDetector detector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         puzzleView.fillGui(scrambled);
         puzzleView.enableListener(this);
         setContentView(puzzleView);
+
+        DoubleTapHandler dth = new DoubleTapHandler();
+        detector = new GestureDetector(this, dth);
+        detector.setOnDoubleTapListener(dth);
+
     }
 
     public boolean onTouch(View v, MotionEvent event){
@@ -76,5 +85,23 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
         }
         return true;
+    }
+
+    public boolean onTouchEvent(MotionEvent event){
+        detector.onTouchEvent(event);
+        return true;
+    }
+
+    private class DoubleTapHandler
+        extends GestureDetector.SimpleOnGestureListener{
+        public boolean onDoubleTapEvent(MotionEvent event){
+            int touchY = (int)event.getRawY();
+            // y coordinate of the touch within puzzleView is
+            // touchY - actionBarHeight - statusBarHeight
+            int index = puzzleView.indexOfTextView(touchY - actionBarHeight - statusBarHeight);
+            if(puzzleView.getTextViewText(index).equals(puzzle.wordToChange()))
+                puzzleView.setTextViewText(index, puzzle.replacementWord());
+            return true;
+        }
     }
 }
