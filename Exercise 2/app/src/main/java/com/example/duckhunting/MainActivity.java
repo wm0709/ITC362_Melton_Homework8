@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import java.util.Timer;
+
 public class MainActivity extends AppCompatActivity {
     private GameView gameView;
 
@@ -24,5 +26,10 @@ public class MainActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getSize(size);
         gameView = new GameView(this, size.x, size.y - statusBarHeight);
         setContentView(gameView);
+        gameView = new GameView(this, size.x, size.y - statusBarHeight);
+        setContentView(gameView);
+
+        Timer gameTimer = new Timer();
+        gameTimer.schedule(new GameTimerTask(gameView), 0, GameView.DELTA_TIME);
     }
 }
