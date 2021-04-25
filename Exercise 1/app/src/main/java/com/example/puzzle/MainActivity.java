@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
     public static int STATUS_BAR_HEIGHT = 24; // in dp
     public static int ACTION_BAR_HEIGHT = 56; // in dp
     private PuzzleView puzzleView;
@@ -48,7 +48,25 @@ public class MainActivity extends AppCompatActivity {
         puzzleView = new PuzzleView(this, puzzleWidth, puzzleHeight, puzzle.getNumberOfParts());
         String[] scrambled = puzzle.scramble();
         puzzleView.fillGui(scrambled);
-
+        puzzleView.enableListener(this);
         setContentView(puzzleView);
+    }
+
+    public boolean onTouch(View v, MotionEvent event){
+        int index = puzzleView.indexOfTextView(v);
+        int action = event.getAction();
+        switch (action){
+            case MotionEvent.ACTION_DOWN:
+                //initialize data before move
+                puzzleView.updateStartPositions(index, (int) event.getY());
+                //bring v to front
+                puzzleView.bringChildToFront(v);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                //update y position of TextView being moved
+                puzzleView.moveTextViewVertically(index,(int)event.getY());
+                break;
+        }
+        return true;
     }
 }

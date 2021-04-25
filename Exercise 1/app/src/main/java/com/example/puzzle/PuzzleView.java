@@ -3,6 +3,7 @@ package com.example.puzzle;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,8 @@ public class PuzzleView extends RelativeLayout {
     private int[] colors;
 
     private int labelHeight;
+    private int startY; // start y coordinate of TextView being moved
+    private int startTouchY; // start y coordinate of current touch
 
     public PuzzleView(Activity activity, int width, int height, int numberOfPieces){
         super(activity);
@@ -41,5 +44,32 @@ public class PuzzleView extends RelativeLayout {
     public void fillGui(String[] scrambledText){
         for(int i = 0; i < tvs.length; i++)
             tvs[i].setText(scrambledText[i]);
+    }
+
+    // Returns the index of tv within the array tvs
+    public int indexOfTextView(View tv){
+        if(!(tv instanceof TextView))
+            return -1;
+        for(int i = 0; i < tvs.length; i++){
+            if(tv == tvs[i])
+                return i;
+        }
+        return -1;
+    }
+
+    public void updateStartPositions(int index, int y){
+        startY = params[index].topMargin;
+        startTouchY = y;
+    }
+
+    // moves the TextView at index index
+    public void moveTextViewVertically(int index, int y){
+        params[index].topMargin = startY + y - startTouchY;
+        tvs[index].setLayoutParams(params[index]);
+    }
+
+    public void enableListener(View.OnTouchListener listener){
+        for(int i = 0; i < tvs.length; i++)
+            tvs[i].setOnTouchListener(listener);
     }
 }
