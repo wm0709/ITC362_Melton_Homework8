@@ -66,6 +66,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 //update y position of TextView being moved
                 puzzleView.moveTextViewVertically(index,(int)event.getY());
                 break;
+            case MotionEvent.ACTION_UP:
+                // move is complete: swap the 2 TextViews
+                int newPosition = puzzleView.tvPosition(index);
+                puzzleView.placeTextViewAtPosition(index, newPosition);
+                // if user just won, disable listener to stop the game
+                if(puzzle.solved(puzzleView.currentSolution()))
+                    puzzleView.disableListener();
+                break;
         }
         return true;
     }
