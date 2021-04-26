@@ -52,9 +52,16 @@ public class GameView extends View {
                 game.getCannonCenter().y - game.getBarrelLength() * (float) Math.sin(game.getCannonAngle()),
                 paint);
 
+        // draw bullet
+        if(!game.bulletOffScreen())
+            canvas.drawCircle(game.getBulletCenter().x, game.getBulletCenter().y, game.getBulletRadius(),paint);
+
         // draw duck
         duckFrame = (duckFrame + 1) % ducks.length;
-        canvas.drawBitmap(ducks[duckFrame], null, game.getDuckRect(),paint);
+        if(game.isDuckShot())
+            canvas.drawBitmap(ducks[0],null,game.getDuckRect(),paint);
+        else
+            canvas.drawBitmap(ducks[duckFrame],null,game.getDuckRect(),paint);
     }
 
     public Game getGame(){

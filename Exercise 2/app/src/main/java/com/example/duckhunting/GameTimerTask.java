@@ -14,8 +14,18 @@ public class GameTimerTask extends TimerTask{
 
     public void run( ) {
         game.moveDuck( );
-        if( game.duckOffScreen( ) )
-            game.startDuckFromRightTopHalf( );
+        if( game.bulletOffScreen() )
+            game.loadBullet();
+        else if( game.isBulletFired() )
+            game.moveBullet();
+        if( game.duckOffScreen( ) ) {
+            game.setDuckShot(false);
+            game.startDuckFromRightTopHalf();
+        } else if (game.duckHit()){
+            game.setDuckShot(true);
+            ((MainActivity) gameView.getContext()).playHitSound();
+            game.loadBullet();
+        }
         gameView.postInvalidate( );
     }
 }
